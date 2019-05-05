@@ -37,74 +37,63 @@ void loop(){
     }
   }
 }
-
-void change_color (int r, int g, int b, int t, int h, int bright) {
-// Leds apagados, acendem um a um na cor branca com pouco brilho e ficam 1 segundo acesos
-  FastLED.setBrightness(bright);
-  for (int i=0; i<NUM_LEDS;i++){
-      black_sculpt[i] =  CRGB(r ,g, b); 
-      FastLED.show(); 
-      delay(h);
-  }
-  delay(t);
-}
-void intensify(int b, int bright,int t,int h){
-// Leds tem o brilho intensificados e ficam no estado de brilho máximo por 1 segundo
-  for (int i=b; i<bright;i++){
-     FastLED.setBrightness(i);
-     FastLED.show();
-     delay(h); 
-  }
-delay(t);
-}
-void dimm(int b,int bright,int t, int h){
-// Leds tem intensidade reduzida até apagarem e permancem apagados por 1 segundo
-  for (int i=b; i>=bright;i--){
-     FastLED.setBrightness(i);
-     FastLED.show(); 
-  }
-   delay(t);
-}
-void blink_leads(int r, int g, int b, int h, int bright){
-// Leds piscam por 10 vezes e apagam por 1 segundo
-  FastLED.setBrightness(bright);
-  for (int i=0; i<10;i++){
-     for (int j=0; j<NUM_LEDS;j++){
-        black_sculpt[j] =  CRGB(r ,g, b);  
-     }
-     FastLED.show();
-    delay(h);
-       for (int j=0; j<NUM_LEDS;j++){
-        black_sculpt[j] =  CRGB(0 ,0, 0);   
-     }
-     FastLED.show();
-  delay(h);
-  }
-}
-void clearLed() {
+void clearLed(struct CRGB *leds) {
   for (int i = 0; i < NUM_LEDS; i++) {
-    black_sculpt[i] =  CRGB(0 , 0, 0);
+    leds[i] =  CRGB(0 , 0, 0);
   }
   FastLED.show();
 }
+
+void change_color (struct CRGB *leds, int r, int g, int b, int t, int h, int bright) {
+  FastLED.setBrightness(bright);
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i] =  CRGB(r , g, b);
+    FastLED.show();
+    delay(h);
+  }
+  delay(t);
+}
+void intensify(int b, int bright, int t, int h) {
+  // Leds tem o brilho intensificados e ficam no estado de brilho máximo por 1 segundo
+  for (int i = b; i < bright; i++) {
+    FastLED.setBrightness(i);
+    FastLED.show();
+    delay(h); 
+  }
+  delay(t);
+}
+void dimm(int b, int bright, int t, int h) {
+  // Leds tem intensidade reduzida até apagarem e permancem apagados por 1 segundo
+  for (int i = b; i >= bright; i--) {
+    FastLED.setBrightness(i);
+    FastLED.show();
+    delay(h);
+  }
+  delay(t);
+}
+void blink_leads(CRGB *leds, int r, int g, int b, int h, int bright) {
+  FastLED.setBrightness(bright);
+  for (int i = 0; i < 10; i++) {
+    for (int j = 0; j < NUM_LEDS; j++) {
+      leds[j] =  CRGB(r , g, b);
+    }
+    FastLED.show();
+    delay(h);
+    for (int j = 0; j < NUM_LEDS; j++) {
+      leds[j] =  CRGB(0 , 0, 0);
+    }
+    FastLED.show();
+    delay(h);
+  }
+}
+
 int main() {
-    Serial.println("Motion detected!");
-    intensify(70,255,1000,200);
-    Serial.println("Motion detected!");
-    blink_leads(255,255,255,30,255);
-    Serial.println("Motion detected!");
-    dimm(255,25,1000,200);
-    Serial.println("Motion detected!");
-    change_color(0,255,255,3000,42,25);
-    Serial.println("Motion detected!");
-    change_color(101,0,255,3000,42,25);
-    Serial.println("Motion detected!");
-    change_color(142,244,68,3000,42,25);
-    Serial.println("Motion detected!");
-    dimm(25,0,0,200);
-    Serial.println("Motion detected!");
-    intensify(254,255,2000,200);
-    Serial.println("Motion detected!");
-    change_color(0,0,0,0,42,255);
-    Serial.println("Motion detected!");
+  clearLed(black_sculpt);
+  change_color(black_sculpt, 255, 255 , 255, 0, 2, 51);
+  intensify(51, 255, 200, 0);
+  change_color(black_sculpt, 0, 255, 255, 200, 2, 255);
+  change_color(black_sculpt, 0, 0, 255, 200, 2, 255);
+  change_color(black_sculpt, 255, 255, 255, 0, 2, 255);
+  blink_leads(black_sculpt, 255, 255, 255, 10, 255);
+  clearLed(black_sculpt);
 }
